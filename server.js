@@ -1,60 +1,92 @@
-const db = require('./db/connections');
-const inquirer = require('inquirer');
-const cTable = require('console.table');
+const inquirer = require("inquirer");
+const db = require("./db/index.js");
+const cTable = require("console.table");
 
-
-function init() {
-    inquirer
-    .prompt({
+const init = () => {
+  inquirer
+    .prompt([
+      {
         type: "list",
         name: "option",
         message: "What would you like to do?",
-        choices: ['View all departments', 
-                  'View all roles',
-                  'View all employees', 
-                  'Add a department', 
-                  'Add a role', 
-                  'Add an employee', 
-                  'Update employee role', 
-                  'Exit']
-    }).then(function(choice) {
-        console.log(choice);
-        switch (choice.option) {
-            case 'View all departments':
-                viewDepartments();
-                break;
-            case 'View all roles':
-                viewRoles();
-                break;
-            case 'Add a department':
-                addDepartment();
-                break;
-            case 'Add a role':
-                addRole();
-                break;
-            case 'Add am employee':
-                addEmployee();
-                break;
-            case 'Update employee role':
-                updateRole();
-                break;
-            case 'Exit':
-                exit();
-                break;
-        }
+        choices: [
+          "View all departments",
+          "View all roles",
+          "View all employees",
+          "Add a department",
+          "Add a role",
+          "Add an employee",
+          "Update an employee role",
+          "Update an employee manager",
+          "View employees by manager",
+          "View employees by department",
+          "Delete a department",
+          "Delete a role",
+          "Delete an employee",
+          "Exit",
+        ],
+      },
+    ])
+    .then((answer) => {
+      switch (answer.option) {
+        case "View all departments":
+          return viewDepartments();
+        case "View all roles":
+          return viewRoles();
+        case "View all employees":
+          return viewEmplpoyees();
+        case "Add a department":
+          return addDept();
+        case "Add a role":
+          return addRole();
+        case "Add an employee":
+          return addEmployee();
+        case "Update an employee role":
+          return updateRole();
+        case "Update an employee manager":
+          return updateManager();
+        case "View employees by manager":
+          return byManager();
+        case "View employees by department":
+          return byDepartment();
+        case "Delete a department":
+          return deleteDepartment();
+        case "Delete a role":
+          return deleteRole();
+        case "Delete an employee":
+          return deleteEmployee();
+        case "Exit":
+          return exit();
+      }
     });
 };
 
+function viewDepartments() {
+  db.getDepartments().then(([rows]) => {
+    let department = rows;
+    console.log("\n");
+    console.table(department);
+  });
+  init();
+}
 
+function viewRoles() {
+  db.getRoles().then(([rows]) => {
+    let roles = rows;
+    console.log("\n");
+    console.table(roles);
+  })
+  init();
+}
 
-
-
-
-
-
-
-
-
+function viewEmplpoyees() {
+  db.getEmployees().then(([rows]) => {
+    let employees = rows
+    console.log("\n");
+    console.table(employees);
+  })
+  init();
+}
 
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
@@ -64,7 +96,8 @@ function init() {
 // WHEN I choose to view all roles
 // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 // WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+// THEN I am presented with a formatted table showing employee data,
+// including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
 // WHEN I choose to add a role

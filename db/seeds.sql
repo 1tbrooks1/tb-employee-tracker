@@ -23,7 +23,7 @@ VALUES
 ('Temp', 8, 20000),
 ('Warehouse Foreman', 9, 65000);
 
-INSERT INTO employees (first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
 ('Michael', 'Scott', 1, NULL),
 ('Dwight K.', 'Schrute', 2, 1),
