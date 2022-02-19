@@ -36,7 +36,7 @@ const init = () => {
         case "View all employees":
           return viewEmplpoyees();
         case "Add a department":
-          return addDept();
+          return addDepartment();
         case "Add a role":
           return addRole();
         case "Add an employee":
@@ -75,17 +75,57 @@ function viewRoles() {
     let roles = rows;
     console.log("\n");
     console.table(roles);
-  })
+  });
   init();
 }
 
 function viewEmplpoyees() {
   db.getEmployees().then(([rows]) => {
-    let employees = rows
+    let employees = rows;
     console.log("\n");
     console.table(employees);
-  })
+  });
   init();
+}
+
+function addDepartment() {
+  inquirer.prompt([
+    {
+      name: 'name',
+      message: "What would you like to name your department?"
+    },
+  ]).then(res => {
+    db.addDepartment(res.name)
+    console.log("The department has been added!")
+    init()
+  })
+}
+
+function addRole() {
+  db.getDepartments()
+  .then(([departments]) => {
+    return inquirer.prompt([
+      {
+      name: 'role',
+      message: 'What is the name of the role you are adding?'
+      },
+      {
+        name: 'salary',
+        message: 'What is the salary amount?'
+      },
+      {
+        type: 'list',
+        name: 'departmentPrompt',
+        message: 'What department does the role belong to?',
+        choices: departments.map(department => ({ name: department.name, value: department.id })),
+      },
+    ])
+  },
+  ).then(({ role, salary, departmentPrompt }) => {
+    db.addRole(role, salary, departmentPrompt)
+    console.log('The role has been successfully added!')
+    init();
+  })
 }
 
 // GIVEN a command-line application that accepts user input

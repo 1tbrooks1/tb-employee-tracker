@@ -23,15 +23,37 @@ class EmployeeDB {
   }
 
   getEmployees() {
-      return this.connection.promise().query(
-          `SELECT
-          employee_id as ID,
-          first_name as 'First Name',
-          last_name as 'Last Name'
-          FROM employee
-          `
-      )
+    return this.connection.promise().query(
+      `SELECT A.employee_id as id, 
+        A.first_name as 'First Name',
+        A.last_name as 'Last Name',
+        roles.role_title as 'Job Title',
+        department.department_name as 'Department Name',
+        roles.salary as Salary,
+        B.first_name as 'Manager First Name',
+        B.last_name as 'Manager Last Name'
+        FROM employee A
+        LEFT JOIN roles
+        ON A.role_id = roles.role_id
+        LEFT JOIN department
+        ON roles.department_id = department.department_id
+        LEFT JOIN employee B on A.manager_id = B.employee_id
+        `
+    );
   }
+
+  addDepartment(name) {
+      return this.connection.promise().query(
+      `INSERT INTO department(department_name)
+      VALUES(?)`, name)
+  };
+
+  addRole(role, salary, department_id) {
+      return this.connection.promise().query(
+          `INSERT INTO roles(role, salary, department_id)
+            VALUES(?,?,?)`, [role, salary, department_id])
+  };
+
 }
 
 module.exports = new EmployeeDB(connection);
