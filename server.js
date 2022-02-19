@@ -1,11 +1,49 @@
 const db = require('./db/connections');
 const inquirer = require('inquirer');
+const cTable = require('console.table');
 
 
 function init() {
     inquirer
-    .prompt()
-} 
+    .prompt({
+        type: "list",
+        name: "option",
+        message: "What would you like to do?",
+        choices: ['View all departments', 
+                  'View all roles',
+                  'View all employees', 
+                  'Add a department', 
+                  'Add a role', 
+                  'Add an employee', 
+                  'Update employee role', 
+                  'Exit']
+    }).then(function(choice) {
+        console.log(choice);
+        switch (choice.option) {
+            case 'View all departments':
+                viewDepartments();
+                break;
+            case 'View all roles':
+                viewRoles();
+                break;
+            case 'Add a department':
+                addDepartment();
+                break;
+            case 'Add a role':
+                addRole();
+                break;
+            case 'Add am employee':
+                addEmployee();
+                break;
+            case 'Update employee role':
+                updateRole();
+                break;
+            case 'Exit':
+                exit();
+                break;
+        }
+    });
+};
 
 
 

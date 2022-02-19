@@ -29,8 +29,8 @@ VALUES
 ('Dwight K.', 'Schrute', 2, 1),
 ('Jim', 'Halpert', 3, 1),
 ('Pam', 'Beasley', 4, 1),
-('Stanley', 'Hudson' 3, 1),
-('Toby', 'Flenderson', 6, 1)
+('Stanley', 'Hudson', 3, 1),
+('Toby', 'Flenderson', 6, 1),
 ('Oscar', 'Martinez', 5, 1),
 ('Kevin', 'Malone', 5, 1),
 ('Creed', 'Bratton', 6, 1),
