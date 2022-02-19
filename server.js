@@ -117,7 +117,7 @@ function addRole() {
         type: 'list',
         name: 'departmentPrompt',
         message: 'What department does the role belong to?',
-        choices: departments.map(department => ({ name: department.name, value: department.id })),
+        choices: departments.map(department => ({ name: department.department_name, value: department.department_id })),
       },
     ])
   },

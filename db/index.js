@@ -50,7 +50,7 @@ class EmployeeDB {
 
   addRole(role, salary, department_id) {
       return this.connection.promise().query(
-          `INSERT INTO roles(role, salary, department_id)
+          `INSERT INTO roles(role_title, salary, department_id)
             VALUES(?,?,?)`, [role, salary, department_id])
   };
 
