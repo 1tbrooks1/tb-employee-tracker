@@ -17,7 +17,6 @@ const init = () => {
           "Add a role",
           "Add an employee",
           "Update an employee role",
-          "Update an employee manager",
           "Delete a department",
           "Exit",
         ],
@@ -39,8 +38,6 @@ const init = () => {
           return addEmployee();
         case "Update an employee role":
           return updateRole();
-        case "Update an employee manager":
-          return updateManager();
         case "Delete a department":
           return deleteDepartment();
         case "Exit":
@@ -150,7 +147,7 @@ function addEmployee() {
           type: "list",
           name: "manager_id",
           message: "Who is the manager of the employee?",
-          choices: managers.map(({ manager_id, first_name, last_name }) => ({
+          choices: managers.map(({ first_name, last_name, manager_id }) => ({
             name: first_name + " " + last_name,
             value: manager_id,
           })),
@@ -158,7 +155,6 @@ function addEmployee() {
       ]);
     })
     .then((answer) => {
-      console.log(answer);
       db.addEmployee(answer);
       console.log("You have successfully added an employee!");
     })

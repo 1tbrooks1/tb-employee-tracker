@@ -17,6 +17,7 @@
 This app is used to view and edit a database of employees in a company
 
 ## Deployment
+You can view a live deployment of the app at this link: https://drive.google.com/file/d/1qHjCKg0vqvSm1JIzh1zb2PNZrN1tXG83/view
 
 ## Screenshot
 ![Screenshot](tracker.JPG)
