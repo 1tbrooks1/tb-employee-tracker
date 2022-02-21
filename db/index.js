@@ -22,6 +22,18 @@ class EmployeeDB {
     );
   }
 
+  getRolesAgain() {
+    return this.connection.promise().query(
+        `SELECT * FROM roles`
+    )
+  };
+
+  getEmployeesAgain() {
+    return this.connection.promise().query(
+        `SELECT * FROM employee`
+    )
+  }
+
   getEmployees() {
     return this.connection.promise().query(
       `SELECT A.employee_id as id, 
@@ -42,6 +54,12 @@ class EmployeeDB {
     );
   }
 
+  getManager() {
+      return this.connection.promise().query(
+          `SELECT * FROM employee`
+      );
+  };
+
   addDepartment(name) {
       return this.connection.promise().query(
       `INSERT INTO department(department_name)
@@ -52,6 +70,20 @@ class EmployeeDB {
       return this.connection.promise().query(
           `INSERT INTO roles(role_title, salary, department_id)
             VALUES(?,?,?)`, [role, salary, department_id])
+  };
+
+  addEmployee(userAnswer) {
+    return this.connection.promise().query(
+          `INSERT INTO employee
+            SET ?`, userAnswer
+      )
+  };
+
+  updateRole(employee_id, role_id) {
+      return this.connection.promise().query(
+          `UPDATE employee SET employee.role_id = ? WHERE employee.employee_id = ?`,
+          [role_id, employee_id]
+      )
   };
 
 }

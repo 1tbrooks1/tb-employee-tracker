@@ -56,95 +56,190 @@ const init = () => {
         case "Delete an employee":
           return deleteEmployee();
         case "Exit":
-          return exit();
+          console.log("Goodbye!");
+          process.exit();
       }
     });
 };
 
 function viewDepartments() {
-  db.getDepartments().then(([rows]) => {
-    let department = rows;
-    console.log("\n");
-    console.table(department);
-  });
-  init();
+  db.getDepartments()
+    .then(([rows]) => {
+      let department = rows;
+      console.log("\n");
+      console.table(department);
+    })
+    .then(() => init());
 }
 
 function viewRoles() {
-  db.getRoles().then(([rows]) => {
-    let roles = rows;
-    console.log("\n");
-    console.table(roles);
-  });
-  init();
+  db.getRoles()
+    .then(([rows]) => {
+      let roles = rows;
+      console.log("\n");
+      console.table(roles);
+    })
+    .then(() => init());
 }
 
 function viewEmplpoyees() {
-  db.getEmployees().then(([rows]) => {
-    let employees = rows;
-    console.log("\n");
-    console.table(employees);
-  });
-  init();
+  db.getEmployees()
+    .then(([rows]) => {
+      let employees = rows;
+      console.log("\n");
+      console.table(employees);
+    })
+    .then(() => init());
 }
 
 function addDepartment() {
-  inquirer.prompt([
-    {
-      name: 'name',
-      message: "What would you like to name your department?"
-    },
-  ]).then(res => {
-    db.addDepartment(res.name)
-    console.log("The department has been added!")
-    init()
-  })
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        message: "What would you like to name your department?",
+      },
+    ])
+    .then((res) => {
+      db.addDepartment(res.name);
+      console.log("The department has been added!");
+    })
+    .then(() => init());
 }
 
 function addRole() {
   db.getDepartments()
-  .then(([departments]) => {
-    return inquirer.prompt([
-      {
-      name: 'role',
-      message: 'What is the name of the role you are adding?'
-      },
-      {
-        name: 'salary',
-        message: 'What is the salary amount?'
-      },
-      {
-        type: 'list',
-        name: 'departmentPrompt',
-        message: 'What department does the role belong to?',
-        choices: departments.map(department => ({ name: department.department_name, value: department.department_id })),
-      },
-    ])
-  },
-  ).then(({ role, salary, departmentPrompt }) => {
-    db.addRole(role, salary, departmentPrompt)
-    console.log('The role has been successfully added!')
-    init();
-  })
+    .then(([departments]) => {
+      return inquirer.prompt([
+        {
+          name: "role",
+          message: "What is the name of the role you are adding?",
+        },
+        {
+          name: "salary",
+          message: "What is the salary amount?",
+        },
+        {
+          type: "list",
+          name: "departmentPrompt",
+          message: "What department does the role belong to?",
+          choices: departments.map((department) => ({
+            name: department.department_name,
+            value: department.department_id,
+          })),
+        },
+      ]);
+    })
+    .then(({ role, salary, departmentPrompt }) => {
+      db.addRole(role, salary, departmentPrompt);
+      console.log("The role has been successfully added!");
+    })
+    .then(() => init());
 }
 
-// GIVEN a command-line application that accepts user input
-// WHEN I start the application
-// THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-// WHEN I choose to view all departments
-// THEN I am presented with a formatted table showing department names and department ids
-// WHEN I choose to view all roles
-// THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-// WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data,
-// including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
-// WHEN I choose to add a role
-// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-// WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-// WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+function addEmployee() {
+  Promise.all([db.getRolesAgain(), db.getManager()])
+    .then(([[roles], [managers]]) => {
+      return inquirer.prompt([
+        {
+          name: "first_name",
+          message: "What is the first name of the employee?",
+        },
+        {
+          name: "last_name",
+          message: "What is the last name of the employee?",
+        },
+        {
+          type: "list",
+          name: "role_id",
+          message: "What is the role of the employee?",
+          choices: roles.map((roles) => ({
+            name: roles.role_title,
+            value: roles.role_id,
+          })),
+        },
+        {
+          type: "list",
+          name: "manager_id",
+          message: "Who is the manager of the employee?",
+          choices: managers.map(({ manager_id, first_name, last_name }) => ({
+            name: first_name + " " + last_name,
+            value: manager_id,
+          })),
+        },
+      ]);
+    })
+    .then((answer) => {
+      console.log(answer);
+      db.addEmployee(answer);
+      console.log("You have successfully added an employee!");
+    })
+    .then(() => init());
+}
+
+function updateRole() {
+  db.getEmployeesAgain().then(([employee]) => {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Which employee would you like to update?",
+          choices: employee.map((employee) => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.employee_id,
+          })),
+        },
+      ])
+      .then((response) => {
+        let employee_id = response.employee;
+        db.getRolesAgain().then(([roles]) => {
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                name: "role",
+                message: "What role do you want the employee to have?",
+                choices: roles.map((roles) => ({
+                  name: roles.role_title,
+                  value: roles.role_id,
+                })),
+              },
+            ])
+            .then((response) =>
+              db
+                .updateRole(employee_id, response.role)
+                .then(() =>
+                  console.log("The role of the employee is now updated!")
+                )
+            )
+            .then(() => init());
+        });
+      });
+  });
+}
+
+function deleteDepartment() {
+  db.getDepartments()
+    .then(([department]) => {
+      return inquirer.prompt([
+        {
+          type: "list",
+          name: "department",
+          message: "Which department would you like to delete?",
+          choices: department.map((department) => ({
+            name: department.department_name,
+            value: department.department_id,
+          })),
+        },
+      ]);
+    })
+    .then(({ department }) => {
+      db.deleteDepartment(department);
+      console
+        .log("You have successfully deleted a department!")
+        .then(() => init());
+    });
+}
 
 init();
