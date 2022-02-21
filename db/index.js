@@ -90,7 +90,7 @@ class EmployeeDB {
       return this.connection.promise().query(
           `DELETE FROM department WHERE department.department_id = ?`
       , id)
-  }
+  };
 
 }
 

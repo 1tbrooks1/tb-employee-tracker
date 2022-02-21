@@ -18,11 +18,7 @@ const init = () => {
           "Add an employee",
           "Update an employee role",
           "Update an employee manager",
-          "View employees by manager",
-          "View employees by department",
           "Delete a department",
-          "Delete a role",
-          "Delete an employee",
           "Exit",
         ],
       },
@@ -47,10 +43,6 @@ const init = () => {
           return updateManager();
         case "Delete a department":
           return deleteDepartment();
-        case "Delete a role":
-          return deleteRole();
-        case "Delete an employee":
-          return deleteEmployee();
         case "Exit":
           console.log("Goodbye!");
           process.exit();
@@ -232,7 +224,7 @@ function deleteDepartment() {
     })
     .then(({ department }) => {
       db.deleteDepartment(department);
-      console.log("You have successfully deleted a department!")
+      console.log("You have successfully deleted a department!");
     })
     .then(() => init());
 }
