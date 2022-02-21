@@ -86,6 +86,12 @@ class EmployeeDB {
       )
   };
 
+  deleteDepartment(id) {
+      return this.connection.promise().query(
+          `DELETE FROM department WHERE department.department_id = ?`
+      , id)
+  }
+
 }
 
 module.exports = new EmployeeDB(connection);
